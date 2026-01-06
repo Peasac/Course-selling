@@ -2,8 +2,10 @@ const {Router} = require('express');
 const userRouter = Router();
 const {z} = require('zod');
 const bcrypt = require("bcrypt")
-const {userModel} = require("../db/index")
+const {userModel,courseModel,purchasesModel} = require("../db/index")
 const jwt = require('jsonwebtoken');
+const {userAuth} = require('../middleware/user.js')
+
 require('dotenv').config;
 const JWT_SECRET = process.env.JWT_SECRET_USER;
 userRouter.post('/signup', async(req,res)=>{
@@ -71,8 +73,27 @@ userRouter.post('/signin', async(req,res)=>{
     })
    }
 })
+// User's purchases
+userRouter.get('/purchases', userAuth,async(req,res)=>{
+    const userId = req.id;
+    const purchases = await purchasesModel.findOne({
+        userId:userId
+    })
+    let purchasedCourseIds = [];
 
-userRouter.get('/purchases', async(req,res)=>{
+    for (let i = 0; i<purchases.length;i++){ 
+        purchasedCourseIds.push(purchases[i].courseId)
+    }
+
+    const coursesData = await courseModel.find({
+        _id: { $in: purchasedCourseIds }
+    })
+
+    res.json({
+        purchases,
+        coursesData
+    })
+
     res.json({
         message:"these are your purchases"
     })

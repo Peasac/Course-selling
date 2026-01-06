@@ -18,7 +18,7 @@ const adminSchema = new schema({
 const courseSchema = new schema({
     title:String,
     description:String,
-    prince:Number, 
+    price:Number, 
     imageUrl:String, 
     creatorId:ObjectId
 })

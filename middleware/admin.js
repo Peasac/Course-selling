@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
-const secret = process.env.JWT_SECRET_USER
+const secret = process.env.JWT_SECRET_ADMIN
 
-function userAuth(req,res,next){
+
+function adminAuth(req,res,next){
     const token = req.headers.token;
     try{
         const verifyToken = jwt.verify(token, secret)
@@ -15,5 +16,4 @@ function userAuth(req,res,next){
         
     }
 }
-
-module.exports = {userAuth}
+module.exports = {adminAuth}
